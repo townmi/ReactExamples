@@ -1,0 +1,27 @@
+{
+  "name": "DOM",
+  "version": "0.0.1",
+  "description": "dom.js for DOM",
+  "author": {
+    "name": "townmi",
+    "url": "http://townmi.gitcafe.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/townmi/DOM.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-uglify": "~0.1.2",
+    "grunt-contrib-concat": "~0.1.1"
+  },
+  "keywords": [
+    "dom"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/townmi/DOM/issues"
+  },
+  "homepage": "https://github.com/townmi/DOM"
+}
