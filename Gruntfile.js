@@ -4,8 +4,8 @@ module.exports = function(grunt) {
         pkg : grunt.file.readJSON('package.json'),
         concat : {
             domop : {
-                src: ['src/jquery-dialog.js', 'src/jquery-foot.js'],
-                dest: 'dest/plug.js'
+                src: ['src/jquery-dialog.js', 'src/jquery-arc-process.js', 'src/jquery-carousel-fade.js', 'src/list.js'],
+                dest: 'dest/common.js'
             }
         },
         uglify : {
@@ -13,8 +13,8 @@ module.exports = function(grunt) {
                 banner : '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build : {
-                src : 'dest/plug.js',
-                dest : 'dest/plug.min.js'
+                src : 'dest/common.js',
+                dest : 'dest/common.min.js'
             }
         }
     });
