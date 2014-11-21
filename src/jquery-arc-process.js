@@ -86,7 +86,6 @@ jQuery.fn.arcProcess = function (){
 					color : color[type],
 					oldColor : "#888d91"
 				}
-				console.log( typeof $(this).parent().attr('process') )
 				// when get this elem postion draw it ;
 				if( ( $(window).height()+$(window).scrollTop() ) > $(this).offset().top && $(this).parent().attr('process')){
 					$(this).parent().attr('process',"");
