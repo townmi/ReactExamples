@@ -15,7 +15,7 @@ var TodoApp = React.createClass({
 
     getInitialState: function() {
         //return TodoStore.getAll();
-        return null;
+        return {name: "hello, world!", _click: false};
     },
 
     componentDidMount: function() {
@@ -24,6 +24,11 @@ var TodoApp = React.createClass({
 
     componentWillUnmount: function() {
         //TodoStore.removeListener('change', this._onChange);
+    },
+
+    handleClick: function () {
+        // click event
+        this.setState({name: this.state._click ? "hello, world" : "haha", _click: !this.state._click });
     },
 
     render: function() {
@@ -37,7 +42,8 @@ var TodoApp = React.createClass({
 
         return (
             <div>
-                Hello, World!
+                <span>{this.state.name}</span>
+                <button onClick={this.handleClick}>改名字</button>
             </div>
         );
     },
