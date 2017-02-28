@@ -4,10 +4,12 @@
  * @author [haixiangtang@creditease.cn]
  */
 
-var React = require('react');
-var TodoApp = require('./components/TodoApp');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from 'root';
 
-React.render(
-<TodoApp />,
-    document.getElementById('todoapp')
+let root = document.getElementById('reactApp');
+
+ReactDOM.render(
+    <App />, root
 );

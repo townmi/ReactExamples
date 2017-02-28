@@ -3,35 +3,36 @@
  * @Date 2015/12/14.
  * @author [haixiangtang@creditease.cn]
  */
-var React = require('react');
+import React, {Component} from 'react'
 
 //var Footer = require('./Footer');
 //var Header = require('./Header');
 //var MainSection = require('./MainSection');
 //
 //var TodoStore = require('../stores/TodoStore');
+class TodoApp extends Component {
+    constructor() {
+        super();
 
-var TodoApp = React.createClass({
+        this.state = {
+            name: "xxx"
+        }
+    }
 
-    getInitialState: function() {
-        //return TodoStore.getAll();
-        return {name: "hello, world!", _click: false};
-    },
-
-    componentDidMount: function() {
+    componentDidMount () {
         //TodoStore.on('change', this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount () {
         //TodoStore.removeListener('change', this._onChange);
-    },
+    }
 
-    handleClick: function () {
+    handleClick () {
         // click event
         this.setState({name: this.state._click ? "hello, world" : "haha", _click: !this.state._click });
-    },
+    }
 
-    render: function() {
+    render () {
         //return (
         //    <div>
         //        <Header />
@@ -46,14 +47,8 @@ var TodoApp = React.createClass({
                 <button onClick={this.handleClick}>改名字</button>
             </div>
         );
-    },
-
-    _onChange: function() {
-        //this.state = TodoStore.getAll();
-        //this.forceUpdate();
-        // this.setState(TodoStore.getAll());
     }
 
-});
+}
 
-module.exports = TodoApp;
+export default TodoApp
