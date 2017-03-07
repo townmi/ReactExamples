@@ -14,16 +14,20 @@ class Tree extends Component {
                 {
                     "name": "首页",
                     "path": "/",
-                    "child": null
+                    "child": null,
+                    "id": "1"
                 },
                 {
                     "name": "用户见证",
                     "path": "/customer",
-                    "child": null
+                    "child": null,
+                    "id": "2"
                 },
                 {
                     "name": "关于我们",
                     "path": "/aboutUs",
+                    "open": false,
+                    "id": "3",
                     "child": [
                         {
                             "name": "新闻",
@@ -41,17 +45,27 @@ class Tree extends Component {
         }
     }
 
+    toggle(index, id) {
+        console.log(this);
+
+        this.setState((prevState)=>{
+            prevState.tree[index].open = !prevState.tree[index].open;
+        })
+    }
+
     refresh(tree) {
         let list = [];
         let self = this;
         tree.forEach(function (cell, index) {
             if (cell.child) {
+                const innerStyle = cell.open ? "display: none;" : "display: block";
                 list.push(
-                    <li>
-                        <div className="collapsible-header"><span className="new badge">{cell.child.length}</span><i
+                    <li key={index}>
+                        <div className="collapsible-header" onClick={self.toggle.bind(self, index, cell.id)}><span
+                            className="new badge">{cell.child.length}</span><i
                             className="material-icons">filter_drama</i>{cell.name}</div>
-                        <div className="collapsible-body">
-                            <ul className="collapsible" data-collapsible="accordion" >
+                        <div className="collapsible-body" style={{innerStyle}}>
+                            <ul className="collapsible">
                                 {self.refresh(cell.child)}
                             </ul>
                         </div>
@@ -59,7 +73,7 @@ class Tree extends Component {
                 )
             } else {
                 list.push(
-                    <li>
+                    <li key={index}>
                         <div className="collapsible-header"><i className="material-icons">filter_drama</i>{cell.name}
                         </div>
                     </li>
@@ -76,7 +90,7 @@ class Tree extends Component {
         const tree = this.state.tree;
         return (
             <div>
-                <ul className="collapsible" data-collapsible="accordion">
+                <ul className="collapsible">
                     {this.refresh(tree)}
                 </ul>
             </div>

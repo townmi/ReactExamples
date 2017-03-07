@@ -33,8 +33,6 @@ const __DEV__ = config.globals.__DEV__;
 const __PROD__ = config.globals.__PROD__;
 const __TEST__ = config.globals.__TEST__;
 
-console.log(__DEV__, __PROD__, __TEST__);
-
 function base() {
     const args = [path.resolve(__dirname, '.')].concat([].slice.call(arguments));
     return path.resolve.apply(path, args)

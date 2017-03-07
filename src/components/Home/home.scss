@@ -19,5 +19,9 @@
             color: rgba(41, 98, 255, 1);
         }
     }
-
+}
+.collapsible-body {
+    .collapsible {
+        display: none;
+    }
 }
