@@ -2,7 +2,7 @@
  * @author harrytang@vipabc.com 
  * @date 17/2/28.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Home from 'components/Home';
 import './root.scss'
@@ -26,6 +26,14 @@ class App extends Component {
         })
     }
 
+    getChildContext() {
+        return { action: this.state.action };
+    }
+
+    static childContextTypes = {
+        action: React.PropTypes.object
+    };
+
     render() {
 
         const actionClass = this.state.action.className;
@@ -41,7 +49,7 @@ class App extends Component {
                     </div>
                 </nav>
                 <div className="container">
-                    <Home/>
+                    <Home />
                 </div>
                 <footer className="page-footer blue accent-4">
                     <div className="container">
@@ -60,14 +68,14 @@ class App extends Component {
                     </div>
                     <div className="footer-copyright">
                         <div className="container">
-                            © 2014 Copyright TutorABC
+                            © 2014 Copyright FaceTime
                             <a className="grey-text text-lighten-4 right" href="#!">FaceTime</a>
                         </div>
                     </div>
                 </footer>
 
                 <div className={"fixed-action-btn" + actionClass} onMouseEnter={this.toggleShow.bind(this)}
-                     onMouseLeave={this.toggleShow.bind(this)}>
+                    onMouseLeave={this.toggleShow.bind(this)}>
                     <a className="btn-floating btn-large red">
                         <i className="large material-icons">mode_edit</i>
                     </a>
