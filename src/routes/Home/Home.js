@@ -1,0 +1,147 @@
+/**
+ * 
+ */
+import React, { Component } from 'react';
+import axios from 'axios';
+import { IndexLink, Link, withRouter } from 'react-router';
+
+import './home.scss';
+
+class Home extends Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            tab: "all",
+            topicList: []
+        }
+        this.fetch()
+    }
+
+    fetch (cell) {
+        let self = this;
+        // if( Object.prototype.toString.call(cell) === "[object String]" && (self.lastPage &&  cell === "next" || self.page === 1 && cell === "prev")) {
+        //     return false;
+        // }
+        // self.dataFetchDown = false;;
+        // self.topicList = [];
+
+        if(Object.prototype.toString.call(cell) === "[object String]") {
+            cell === "next" ? self.page++ : self.page--;
+        } else if(Object.prototype.toString.call(cell) === "[object Number]") {
+            self.page = cell;
+        } else if(Object.prototype.toString.call(cell) === "[object Object]") {
+            return self.setState((prevState) => {
+                prevState.tab = cell.tab;
+            }, () => {
+                self.__fetch();
+            });
+        }
+        this.__fetch()
+    }
+    __fetch () {
+        let self = this;
+        return this.getList()
+        .then((lastData) => {
+            if(lastData.status === "success" && !!lastData.data.length) {
+                self.setState((prevState) => {
+                    prevState.topicList = lastData.data;
+                })
+            } else {
+                return self.__fetch();
+            }
+        });
+    }
+    getList () {
+        let self = this;
+        
+        return new Promise((resolve, reject) => {
+            axios.get('https://cnodejs.org/api/v1/topics', {
+                params: {
+                    tab: self.state.tab,
+                    page: 1,
+                    limit: 10
+                }
+            })
+            .then((response) => {
+                resolve({
+                    status: "success",
+                    data: response.data.data
+                });
+            })
+            .catch((error) => {
+                resolve({
+                    status: "fail",
+                    data: error
+                });
+            });
+        });
+    }
+    render () {
+        let self = this;
+        const routers =  [
+            {title: "全部",tab: "all"},
+            {title: "精华",tab: "good"},
+            {title: "分享",tab: "share"},
+            {title: "问答",tab: "ask"},
+            {title: "招聘",tab: "job"}
+        ];
+
+        let tabsHtml = "";
+
+        tabsHtml = routers.map(function (cell, index) {
+            const tabClassName = self.state.tab === cell.tab ? "link active" : "link";
+            return (
+                <li key={index}><a href="#" className={tabClassName} onClick={self.fetch.bind(self, cell)}>{cell.title}</a></li>
+            )
+        });
+
+        let listHtml = "";
+        const tabJson = {
+            all: "全部",
+            good: "精华",
+            share: "分享",
+            ask: "问答",
+            job: "招聘"
+        };
+
+        if(this.state.topicList.length) {
+            listHtml = this.state.topicList.map(function (cell, index) {
+                const tabClassName =  cell.good || cell.top ? "good" : "tab";
+                let tabTitle = tabJson[cell.tab];
+                if(cell.good) {
+                    tabTitle = "精华";
+                } else if(cell.top) {
+                    tabTitle = "置顶";
+                }
+                return (
+                    <li key={index}>
+                        <Link to="/topic">
+                            <div className="collapsible-header">
+                                <i className="material-icons"><img src={cell.author.avatar_url}/></i>
+                                <span className={tabClassName}>{tabTitle}</span>
+                                <span className="title">{cell.title}</span>
+                                <span className="badge">{cell.reply_count} / {cell.visit_count}</span>
+                            </div>
+                        </Link>
+                    </li>
+                )
+            })
+        }
+        return (
+            <div>
+                <nav>
+                    <div className="nav-wrapper">
+                        <ul className="left">
+                            {tabsHtml}
+                        </ul>
+                    </div>
+                </nav>
+                <ul className="collapsible" data-collapsible="accordion">
+                    {listHtml}
+                </ul>
+            </div>
+        )
+    }
+}
+
+export default Home;

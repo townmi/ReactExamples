@@ -1,0 +1,46 @@
+.topic {
+    img {
+        max-width: 100%;
+    }
+    nav {
+        background-color: transparent;
+        box-shadow: none
+    }
+    .breadcrumb {
+        color: rgba(41, 98, 255, 0.7);
+        &:before {
+            color: rgba(41, 98, 255, 0.7);
+        }
+        &:first-child {
+            color: #2962FF;
+        }
+    }
+}
+.root {
+    background-color: #f2f2f2;
+}
+@media only screen and (max-width: 768px) {
+    nav .nav-wrapper {
+        width: 90%;
+        padding-top: 15px;
+        margin: 0 auto;
+        &>div {
+            line-height: 1em;
+        }
+    }
+
+    span.breadcrumb {
+        display: inline-block;
+        width: 80%;
+        line-height: 22px;
+        position: relative;
+        top: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .body {
+        width: 90%;
+        margin: 0 auto;
+    }
+}

@@ -62,11 +62,7 @@ const webpackConfig = {
 };
 
 webpackConfig.entry = {
-    app: __DEV__ ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=/__webpack_hmr`) : [APP_ENTRY],
-    vendor: [
-        'react',
-        'react-router'
-    ]
+    app: __DEV__ ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=/__webpack_hmr`) : [APP_ENTRY]
 };
 
 webpackConfig.output = {

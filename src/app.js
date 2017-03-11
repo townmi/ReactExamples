@@ -8,8 +8,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'root';
 
-let root = document.getElementById('reactApp');
+const MOUNT_NODE = document.getElementById('reactApp');
 
-ReactDOM.render(
-    <App />, root
-);
+let render = () => {
+
+    const routes = require('./routes/index').default();
+
+    console.log(routes);
+
+    ReactDOM.render(
+        <App routes={routes}/>,
+        MOUNT_NODE
+    )
+
+};
+
+render();
