@@ -13,25 +13,27 @@ const argv = require('yargs').argv;
 
 const debug = require('debug')('app:webpack:config');
 
-const config = {
+let config = {
     dev: process.env.NODE_ENV || 'development'
 };
 
 config.globals = {
     'process.env': {
-        'NODE_ENV': JSON.stringify(config.env)
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     },
-    'NODE_ENV': config.env,
-    '__DEV__': config.env === 'development',
-    '__PROD__': config.env === 'production',
-    '__TEST__': config.env === 'test',
-    '__COVERAGE__': !argv.watch && config.env === 'test',
+    'NODE_ENV': process.env.NODE_ENV,
+    '__DEV__': process.env.NODE_ENV === 'development',
+    '__PROD__': process.env.NODE_ENV === 'production',
+    '__TEST__': process.env.NODE_ENV === 'test',
+    '__COVERAGE__': !argv.watch && process.env.NODE_ENV === 'test',
     '__BASENAME__': JSON.stringify(process.env.BASENAME || '')
 };
 
-const __DEV__ = config.globals.__DEV__;
-const __PROD__ = config.globals.__PROD__;
-const __TEST__ = config.globals.__TEST__;
+console.log(process.env.NODE_ENV)
+
+const __DEV__ = process.env.NODE_ENV === "development";
+const __PROD__ = process.env.NODE_ENV === "production";
+const __TEST__ = process.env.NODE_ENV === "test";
 
 function base() {
     const args = [path.resolve(__dirname, '.')].concat([].slice.call(arguments));
@@ -44,16 +46,18 @@ config.paths = {
 };
 
 
-rimraf(config.paths.build(), function () {
-    console.log(arguments)
-});
+// rimraf(config.paths.build(), function () {
+//     console.log(arguments)
+// });
+
+console.log(config);
 
 const APP_ENTRY = config.paths.client('app.js');
 
 const webpackConfig = {
     name: 'client',
     target: 'web',
-    devtool: 'source-map',
+    devtool: __PROD__ ? false : 'source-map',
     resolve: {
         root: base('src'),
         extensions: ['', '.js', '.jsx', '.json']
@@ -86,6 +90,7 @@ webpackConfig.plugins = [
     })
 ];
 
+console.log(__PROD__)
 if (__DEV__) {
     debug('Enable plugins for live development (HMR, NoErrors).');
     webpackConfig.plugins.push(
@@ -93,6 +98,7 @@ if (__DEV__) {
         new webpack.NoErrorsPlugin()
     )
 } else if (__PROD__) {
+    console.log(123123123123123)
     debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).');
     webpackConfig.plugins.push(
         new webpack.optimize.OccurrenceOrderPlugin(),

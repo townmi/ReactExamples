@@ -3,7 +3,7 @@
  * @date 17/2/28.
  */
 import React, { Component, PropTypes } from 'react';
-import { browserHistory, Router } from 'react-router';
+import { hashHistory, Router } from 'react-router';
 
 class App extends Component {
 
@@ -21,7 +21,7 @@ class App extends Component {
 
         return (
             // <Router history={browserHistory} children={routes}/>
-            <Router history={browserHistory} children={routes}/>
+            <Router history={hashHistory} children={routes}/>
         )
 
     }

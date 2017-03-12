@@ -37,20 +37,20 @@
     }
 }
 .collapsible-header {
-    span.good, span.top, span.tab {
+    .good, .top, .tab {
         padding: 2px 7px;
         margin-right: 0.5rem;
         border-radius: 2px;
         font-size: 12px;
         color: #ffffff;
     }
-    span.good, span.top {
+    .good, .top {
         background-color: #2962FF;
     }
-    span.tab {
+    .tab {
         background-color: #c4c4c4;
     }
-    span.title {
+    .title {
         width: 70%;
         position: relative;
         top: 8px;

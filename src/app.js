@@ -6,15 +6,14 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from 'root';
+import { Route } from 'react-router';
+import App from './root';
 
 const MOUNT_NODE = document.getElementById('reactApp');
 
 let render = () => {
 
     const routes = require('./routes/index').default();
-
-    console.log(routes);
 
     ReactDOM.render(
         <App routes={routes}/>,

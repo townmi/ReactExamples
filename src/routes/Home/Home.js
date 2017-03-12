@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import axios from 'axios';
-import { IndexLink, Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 
 import './home.scss';
 
@@ -13,6 +13,9 @@ class Home extends Component {
         this.state = {
             tab: "all",
             topicList: []
+        }
+        if(this.props.location.state && this.props.location.state.tab) {
+            this.state.tab = this.props.location.state.tab;
         }
         this.fetch()
     }
@@ -30,6 +33,10 @@ class Home extends Component {
         } else if(Object.prototype.toString.call(cell) === "[object Number]") {
             self.page = cell;
         } else if(Object.prototype.toString.call(cell) === "[object Object]") {
+
+            if(cell.tab === self.state.tab) {
+                return false;
+            }
             return self.setState((prevState) => {
                 prevState.tab = cell.tab;
             }, () => {
@@ -115,14 +122,20 @@ class Home extends Component {
                 }
                 return (
                     <li key={index}>
-                        <Link to="/topic">
                             <div className="collapsible-header">
-                                <i className="material-icons"><img src={cell.author.avatar_url}/></i>
+                                <Link to={{
+                                    pathname: '/user/'+cell.author.loginname
+                                }}>
+                                    <i className="material-icons"><img src={cell.author.avatar_url}/></i>
+                                </Link>
                                 <span className={tabClassName}>{tabTitle}</span>
-                                <span className="title">{cell.title}</span>
+                                <Link to={{
+                                    pathname: '/topic/'+cell.id
+                                }}>
+                                    <span className="title">{cell.title}</span>
+                                </Link>
                                 <span className="badge">{cell.reply_count} / {cell.visit_count}</span>
                             </div>
-                        </Link>
                     </li>
                 )
             })

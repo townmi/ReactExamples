@@ -3,15 +3,11 @@
  */
 // Sync route definition
 export default (store) => ({
-	path: '/topic/:id',
+	path: '/user/:username',
 	getComponent(nextState, cb) {
 		require.ensure([], (require) => {
-			const Topic = require('./Topic').default;
-			cb(null, Topic)
+			const User = require('./User').default;
+			cb(null, User)
 		})
 	}
 })
-
-// export default {
-//   component: Topic
-// }
