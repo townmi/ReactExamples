@@ -5,6 +5,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router';
 
+import Load from '../../components/Load';
+import Page from '../../components/Page';
+
 import './home.scss';
 
 class Home extends Component {
@@ -12,12 +15,14 @@ class Home extends Component {
         super(props);
         this.state = {
             tab: "all",
+            dataFetchDown: false,
             topicList: []
         }
         if(this.props.location.state && this.props.location.state.tab) {
             this.state.tab = this.props.location.state.tab;
         }
-        this.fetch()
+        let self = this;
+        self.__fetch();
     }
 
     fetch (cell) {
@@ -39,11 +44,16 @@ class Home extends Component {
             }
             return self.setState((prevState) => {
                 prevState.tab = cell.tab;
+                prevState.dataFetchDown = false;
             }, () => {
                 self.__fetch();
             });
         }
-        this.__fetch()
+        self.setState((prevState) => {
+            prevState.dataFetchDown = false;
+        }, () => {
+            self.__fetch();
+        });
     }
     __fetch () {
         let self = this;
@@ -52,6 +62,7 @@ class Home extends Component {
             if(lastData.status === "success" && !!lastData.data.length) {
                 self.setState((prevState) => {
                     prevState.topicList = lastData.data;
+                    prevState.dataFetchDown = true;
                 })
             } else {
                 return self.__fetch();
@@ -122,38 +133,47 @@ class Home extends Component {
                 }
                 return (
                     <li key={index}>
-                            <div className="collapsible-header">
-                                <Link to={{
-                                    pathname: '/user/'+cell.author.loginname
-                                }}>
-                                    <i className="material-icons"><img src={cell.author.avatar_url}/></i>
-                                </Link>
-                                <span className={tabClassName}>{tabTitle}</span>
-                                <Link to={{
-                                    pathname: '/topic/'+cell.id
-                                }}>
-                                    <span className="title">{cell.title}</span>
-                                </Link>
-                                <span className="badge">{cell.reply_count} / {cell.visit_count}</span>
-                            </div>
+                        <div className="collapsible-header">
+                            <Link to={{
+                                pathname: '/user/'+cell.author.loginname
+                            }}>
+                                <i className="material-icons"><img src={cell.author.avatar_url}/></i>
+                            </Link>
+                            <span className={tabClassName}>{tabTitle}</span>
+                            <Link to={{
+                                pathname: '/topic/'+cell.id
+                            }}>
+                                <span className="title">{cell.title}</span>
+                            </Link>
+                            <span className="badge">{cell.reply_count} / {cell.visit_count}</span>
+                        </div>
                     </li>
                 )
             })
         }
-        return (
-            <div>
-                <nav>
-                    <div className="nav-wrapper">
-                        <ul className="left">
-                            {tabsHtml}
-                        </ul>
-                    </div>
-                </nav>
-                <ul className="collapsible" data-collapsible="accordion">
-                    {listHtml}
-                </ul>
-            </div>
-        )
+
+        if(this.state.dataFetchDown) {
+            return (
+                <div>
+                    <nav>
+                        <div className="nav-wrapper">
+                            <ul className="left">
+                                {tabsHtml}
+                            </ul>
+                        </div>
+                    </nav>
+                    <ul className="collapsible" data-collapsible="accordion">
+                        {listHtml}
+                    </ul>
+                    <Page />
+                </div>
+            )
+        } else {
+            return (
+                <Load />
+            )
+        }
+        
     }
 }
 
