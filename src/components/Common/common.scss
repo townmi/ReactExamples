@@ -14,13 +14,16 @@
             }
         }
     }
+}
+
+nav {
     .avatar {
         img {
+            width: 30px;
             vertical-align: middle;
             border-radius: 100%;
         }
     }
-    
 }
 .content {
     min-height: calc(100vh - 265px);

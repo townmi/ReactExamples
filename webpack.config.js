@@ -29,8 +29,6 @@ config.globals = {
     '__BASENAME__': JSON.stringify(process.env.BASENAME || '')
 };
 
-console.log(process.env.NODE_ENV)
-
 const __DEV__ = process.env.NODE_ENV === "development";
 const __PROD__ = process.env.NODE_ENV === "production";
 const __TEST__ = process.env.NODE_ENV === "test";
@@ -44,13 +42,6 @@ config.paths = {
     client: base.bind(null, 'src'),
     build: base.bind(null, 'dist')
 };
-
-
-// rimraf(config.paths.build(), function () {
-//     console.log(arguments)
-// });
-
-console.log(config);
 
 const APP_ENTRY = config.paths.client('app.js');
 
@@ -66,52 +57,15 @@ const webpackConfig = {
 };
 
 webpackConfig.entry = {
-    app: __DEV__ ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=/__webpack_hmr`) : [APP_ENTRY]
+    app: __DEV__ ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=/__webpack_hmr`) : [APP_ENTRY],
+    vendor: ['react', 'react-dom', 'react-router'],
 };
 
 webpackConfig.output = {
-    filename: `[name].[hash].js`,
+    filename: `[name].[hash:8].js`,
     path: config.paths.build(),
     publicPath: '/'
 };
-
-
-webpackConfig.plugins = [
-    new webpack.DefinePlugin(config.globals),
-    new HtmlWebpackPlugin({
-        template: config.paths.client('index.html'),
-        hash: false,
-        // favicon: base('static/favicon.ico'),
-        filename: 'index.html',
-        inject: 'body',
-        minify: {
-            collapseWhitespace: true
-        }
-    })
-];
-
-console.log(__PROD__)
-if (__DEV__) {
-    debug('Enable plugins for live development (HMR, NoErrors).');
-    webpackConfig.plugins.push(
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
-    )
-} else if (__PROD__) {
-    console.log(123123123123123)
-    debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).');
-    webpackConfig.plugins.push(
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                unused: true,
-                dead_code: true,
-                warnings: false
-            }
-        })
-    )
-}
 
 webpackConfig.module.loaders = [{
     test: /\.(js|jsx)$/,
@@ -126,7 +80,6 @@ webpackConfig.module.loaders = [{
     test: /\.json$/,
     loader: 'json'
 }];
-
 
 const BASE_CSS_LOADER = 'css?sourceMap&-minimize';
 
@@ -172,5 +125,49 @@ webpackConfig.postcss = [
         sourcemap: true
     })
 ];
+
+webpackConfig.plugins = [
+    new webpack.optimize.CommonsChunkPlugin({
+        name : 'vendor'// also can a array
+    }),
+    new HtmlWebpackPlugin({
+        template: config.paths.client('index.html'),
+        hash: false,
+        // favicon: base('static/favicon.ico'),
+        filename: 'index.html',
+        inject: 'body',
+        minify: {
+            collapseWhitespace: true
+        }
+    })
+];
+
+if (__DEV__) {
+    debug('Enable plugins for live development (HMR, NoErrors).');
+    webpackConfig.plugins.push(
+        new webpack.DefinePlugin(config.globals),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    )
+} else if (__PROD__) {
+    
+    debug('Enable plugins for production (OccurenceOrder, Dedupe & UglifyJS).');
+    webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                unused: true,
+                dead_code: true,
+                warnings: false
+            }
+        })
+    )
+}
 
 module.exports = webpackConfig;

@@ -2,6 +2,7 @@ import Common from '../components/Common';
 import Home from './Home';
 import Topic from './Topic';
 import User from './User';
+import Login from './Login';
 
 export const createRoutes = (store) => ({
     path: '/',
@@ -9,7 +10,8 @@ export const createRoutes = (store) => ({
     indexRoute: Home,
     childRoutes: [
         Topic(),
-        User()
+        User(),
+        Login()
     ]
 });
 

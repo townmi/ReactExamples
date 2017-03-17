@@ -12,6 +12,7 @@ class Reply extends Component {
     render() {
         
         const replyInfo = this.props.info;
+        const index = this.props.replyIndex;
         const content = (
             <p className="body" dangerouslySetInnerHTML={{
                 __html: replyInfo.content
@@ -25,7 +26,7 @@ class Reply extends Component {
                 </i>
                 <div className="title">
                     <span>{replyInfo.author.loginname}</span>
-                    <span> { (replyInfo.replyIndex+1)+'楼' } </span>
+                    <span> { (index+1)+'楼' } </span>
                 </div>
                 {content}
                 <a href="#!" className="secondary-content"><i className="mdi-action-grade"></i></a>

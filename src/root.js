@@ -21,7 +21,7 @@ class App extends Component {
 
         return (
             // <Router history={browserHistory} children={routes}/>
-            <Router history={hashHistory} children={routes}/>
+            <Router history={hashHistory} routes={routes}/>
         )
 
     }

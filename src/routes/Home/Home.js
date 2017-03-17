@@ -11,39 +11,38 @@ import Page from '../../components/Page';
 import './home.scss';
 
 class Home extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             tab: "all",
+            page: 1,
+            limit: 10,
             dataFetchDown: false,
-            topicList: []
+            topicList: [],
+            lastPage: false
         }
-        if(this.props.location.state && this.props.location.state.tab) {
+        if (this.props.location.state && this.props.location.state.tab) {
             this.state.tab = this.props.location.state.tab;
         }
         let self = this;
         self.__fetch();
     }
 
-    fetch (cell) {
+    fetch(cell) {
         let self = this;
-        // if( Object.prototype.toString.call(cell) === "[object String]" && (self.lastPage &&  cell === "next" || self.page === 1 && cell === "prev")) {
-        //     return false;
-        // }
-        // self.dataFetchDown = false;;
-        // self.topicList = [];
 
-        if(Object.prototype.toString.call(cell) === "[object String]") {
+        if (Object.prototype.toString.call(cell) === "[object String]") {
             cell === "next" ? self.page++ : self.page--;
-        } else if(Object.prototype.toString.call(cell) === "[object Number]") {
+        } else if (Object.prototype.toString.call(cell) === "[object Number]") {
             self.page = cell;
-        } else if(Object.prototype.toString.call(cell) === "[object Object]") {
+        } else if (Object.prototype.toString.call(cell) === "[object Object]") {
 
-            if(cell.tab === self.state.tab) {
+            if (cell.tab === self.state.tab) {
                 return false;
             }
             return self.setState((prevState) => {
                 prevState.tab = cell.tab;
+                prevState.page = 1;
                 prevState.dataFetchDown = false;
             }, () => {
                 self.__fetch();
@@ -55,53 +54,62 @@ class Home extends Component {
             self.__fetch();
         });
     }
-    __fetch () {
-        let self = this;
-        return this.getList()
-        .then((lastData) => {
-            if(lastData.status === "success" && !!lastData.data.length) {
-                self.setState((prevState) => {
-                    prevState.topicList = lastData.data;
-                    prevState.dataFetchDown = true;
-                })
-            } else {
-                return self.__fetch();
-            }
+    setPage(currentPage) {
+        this.setState((prevState) => {
+            prevState.dataFetchDown = false;
+            prevState.page = currentPage
+        }, () => {
+            this.__fetch();
         });
     }
-    getList () {
+    __fetch() {
         let self = this;
-        
+        return this.getList()
+            .then((lastData) => {
+                if (lastData.status === "success" && !!lastData.data.length) {
+                    self.setState((prevState) => {
+                        prevState.topicList = lastData.data;
+                        prevState.dataFetchDown = true;
+                        prevState.lastPage = lastData.data.length < prevState.limit ? true : false;
+                    })
+                } else {
+                    return self.__fetch();
+                }
+            });
+    }
+    getList() {
+        let self = this;
+
         return new Promise((resolve, reject) => {
             axios.get('https://cnodejs.org/api/v1/topics', {
                 params: {
                     tab: self.state.tab,
-                    page: 1,
-                    limit: 10
+                    page: self.state.page,
+                    limit: self.state.limit
                 }
             })
-            .then((response) => {
-                resolve({
-                    status: "success",
-                    data: response.data.data
+                .then((response) => {
+                    resolve({
+                        status: "success",
+                        data: response.data.data
+                    });
+                })
+                .catch((error) => {
+                    resolve({
+                        status: "fail",
+                        data: error
+                    });
                 });
-            })
-            .catch((error) => {
-                resolve({
-                    status: "fail",
-                    data: error
-                });
-            });
         });
     }
-    render () {
+    render() {
         let self = this;
-        const routers =  [
-            {title: "全部",tab: "all"},
-            {title: "精华",tab: "good"},
-            {title: "分享",tab: "share"},
-            {title: "问答",tab: "ask"},
-            {title: "招聘",tab: "job"}
+        const routers = [
+            { title: "全部", tab: "all" },
+            { title: "精华", tab: "good" },
+            { title: "分享", tab: "share" },
+            { title: "问答", tab: "ask" },
+            { title: "招聘", tab: "job" }
         ];
 
         let tabsHtml = "";
@@ -109,7 +117,7 @@ class Home extends Component {
         tabsHtml = routers.map(function (cell, index) {
             const tabClassName = self.state.tab === cell.tab ? "link active" : "link";
             return (
-                <li key={index}><a href="#" className={tabClassName} onClick={self.fetch.bind(self, cell)}>{cell.title}</a></li>
+                <li key={index}><a href="javascript:;" className={tabClassName} onClick={self.fetch.bind(self, cell)}>{cell.title}</a></li>
             )
         });
 
@@ -122,26 +130,26 @@ class Home extends Component {
             job: "招聘"
         };
 
-        if(this.state.topicList.length) {
+        if (this.state.topicList.length) {
             listHtml = this.state.topicList.map(function (cell, index) {
-                const tabClassName =  cell.good || cell.top ? "good" : "tab";
+                const tabClassName = cell.good || cell.top ? "good" : "tab";
                 let tabTitle = tabJson[cell.tab];
-                if(cell.good) {
+                if (cell.good) {
                     tabTitle = "精华";
-                } else if(cell.top) {
+                } else if (cell.top) {
                     tabTitle = "置顶";
                 }
                 return (
                     <li key={index}>
                         <div className="collapsible-header">
                             <Link to={{
-                                pathname: '/user/'+cell.author.loginname
+                                pathname: '/user/' + cell.author.loginname
                             }}>
-                                <i className="material-icons"><img src={cell.author.avatar_url}/></i>
+                                <i className="material-icons"><img src={cell.author.avatar_url} /></i>
                             </Link>
                             <span className={tabClassName}>{tabTitle}</span>
                             <Link to={{
-                                pathname: '/topic/'+cell.id
+                                pathname: '/topic/' + cell.id
                             }}>
                                 <span className="title">{cell.title}</span>
                             </Link>
@@ -152,7 +160,7 @@ class Home extends Component {
             })
         }
 
-        if(this.state.dataFetchDown) {
+        if (this.state.dataFetchDown) {
             return (
                 <div>
                     <nav>
@@ -165,7 +173,11 @@ class Home extends Component {
                     <ul className="collapsible" data-collapsible="accordion">
                         {listHtml}
                     </ul>
-                    <Page />
+                    <Page pageInfo={{
+                        currentPage: this.state.page,
+                        limit: this.state.limit,
+                        lastPage: this.state.lastPage
+                    }} setPage={this.setPage.bind(this)} />
                 </div>
             )
         } else {
@@ -173,7 +185,7 @@ class Home extends Component {
                 <Load />
             )
         }
-        
+
     }
 }
 

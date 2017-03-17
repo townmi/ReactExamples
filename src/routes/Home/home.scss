@@ -8,8 +8,10 @@
         margin-bottom: 30px;
     }
     .link {
+        display: block;
         padding: 0 25px;
         color: #2962FF;
+        cursor: pointer;
         &.active {
             background-color: #2962FF;
             color: #ffffff;
@@ -62,7 +64,6 @@
     }
     img {
         width: 100%;
-        vertical-align: sub;
     }
 }
 .collapsible-body {
