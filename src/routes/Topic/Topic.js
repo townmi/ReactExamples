@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Link } from 'react-router';
 
 import Reply from '../../components/Reply';
-
+import Commit from '../../components/Commit';
 import './topic.scss';
 
 class Topic extends Component {
@@ -75,6 +75,9 @@ class Topic extends Component {
                         <ul className="collection">
                             {replyHtml}
                         </ul>
+                        <br/>
+                        <Commit/>
+                        <br/>
                     </div>
                 </div>
             </div>
